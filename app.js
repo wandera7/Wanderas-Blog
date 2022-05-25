@@ -1,4 +1,4 @@
-//jshint esversion:6
+
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -16,23 +16,14 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-
+//Making the Data Base
 mongoose.connect("mongodb://localhost:27017/blogDB",{useNewUrlParser:true});
 const blogSchema=new mongoose.Schema({
   title:String,
   content:String
-})
-const Blog=mongoose.model("Blog",blogSchema)
-/*
-const postsSchema=new mongoose.Schema({
-  posts:[blogSchema]
-})
-const Post=mongoose.model("Post",postsSchema)*/
-
-
-
-//const posts = [];
-
+});
+const Blog=mongoose.model("Blog",blogSchema);
+//Going to the Home Page
 app.get("/", function(req, res){
   Blog.find({},function(err,results){
     if(!err){
@@ -46,39 +37,31 @@ app.get("/", function(req, res){
 
     }
 
-
-
-
-
-
-
   })
-
-
-
-
 
 
 });
 
 
-
-
-
-
-
+//About Page
 app.get("/about", function(req, res){
   res.render("about", {aboutContent: aboutContent});
 });
 
+
+//Contact Page
 app.get("/contact", function(req, res){
   res.render("contact", {contactContent: contactContent});
 });
 
+
+//Compose Page
 app.get("/compose", function(req, res){
   res.render("compose");
 });
 
+
+//Posting on the compose page
 app.post("/compose", function(req, res){
 
  const newPost=new Blog({
@@ -95,7 +78,7 @@ app.post("/compose", function(req, res){
 
   
 });
-
+//Deleting a post
 app.post("/delete",function(req,res){
   const postDelete=req.body.del
   Blog.deleteOne({_id:postDelete},function(err){
@@ -105,7 +88,7 @@ app.post("/delete",function(req,res){
   })
 
 })
-
+//Accessing using Id
 app.get("/posts/:postId", function(req, res){
   const requestedId= req.params.postId;
   console.log(requestedId)
